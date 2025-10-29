@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from nba_api.stats.endpoints import leaguestandings
 from nba_api.stats.endpoints import leaguedashplayerstats
 
@@ -42,11 +43,11 @@ def get_curr_mvp_table(model):
     mvpdf = df[df['MVP'] == 1].reset_index(drop=True)
     mvpdf['PREDICT_PROB'] = 100*mvpdf['PREDICT_PROB']
 
-    mvptable = mvpdf[['PREDICT_PROB', 'PLAYER_NAME', 'AGE', 'GP', 'TeamName',
-                      'Conference', 'PlayoffRank', 'WINS', 'LOSSES', 'WinPCT',
+    mvptable = mvpdf[['PREDICT_PROB', 'PLAYER_NAME', 'AGE', 'GP', 'TeamName', 'W', 'L',
+                      'Conference', 'PlayoffRank', 'WinPCT', 'WINS', 'LOSSES',
                       'GP_PCT', 'MPG', 'PPG', 'RPG', 'APG', 'TPG', 'SPG', 'BPG']].rename(
                           columns={'PLAYER_NAME':'PLAYER', 'TeamName':'TEAM', 'Conference':'CONF',
-                                   'WINS':'W', 'LOSSES':'L', 'WinPCT':'WIN%', 'PlayoffRank':'TEAMRANK',
+                                   'Record':'RECORD', 'WinPCT':'WIN%', 'PlayoffRank':'TEAMRANK',
                                    'MPG':'MIN', 'PPG':'PTS', 'RPG':'REB', 'APG':'AST', 'TPG':'TOV',
                                    'SPG':'STL', 'BPG':'BLK', 'PREDICT_PROB':'PROB%', 'GP_PCT':'GP%'})
 
@@ -54,10 +55,12 @@ def get_curr_mvp_table(model):
     mvptable['TEAMRANK'] = '#'+mvptable['TEAMRANK'].astype(str)
     mvptable[['WIN%', 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'PROB%', 'GP%']] = mvptable[['WIN%', 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'PROB%', 'GP%']].round(2)
 
-    mvptable['WIN%'] = mvptable['WIN%'].astype(str) + '%'
+    mvptable['GP%'] = np.round(100*mvptable['WIN%'],2)
     mvptable['RANK'] = mvptable['CONF'] + ' ' + mvptable['TEAMRANK']
-    colorder = ['PROB%', 'PLAYER', 'AGE', 'GP', 'TEAM', 'RANK', 'W', 'L',
-                'WIN%', 'GP%', 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK']
+    mvptable['RECORD'] = mvptable['WINS'].astype(str) + '-' + mvptable['LOSSES'].astype(str)
+
+    colorder = ['PROB%', 'PLAYER', 'AGE', 'GP', 'GP%', 'W', 'L',
+                'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'TEAM', 'RANK', 'RECORD']
     mvptable = mvptable[colorder].sort_values('PROB%', ascending=False).reset_index(drop=True)
 
     return mvptable
