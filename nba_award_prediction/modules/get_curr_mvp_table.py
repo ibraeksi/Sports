@@ -55,7 +55,7 @@ def get_curr_mvp_table(model):
     mvptable['TEAMRANK'] = '#'+mvptable['TEAMRANK'].astype(str)
     mvptable[['WIN%', 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'PROB%', 'GP%']] = mvptable[['WIN%', 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'PROB%', 'GP%']].round(2)
 
-    mvptable['GP%'] = np.round(100*mvptable['WIN%'],2)
+    mvptable['GP%'] = np.round(100*mvptable['GP%'],2)
     mvptable['RANK'] = mvptable['CONF'] + ' ' + mvptable['TEAMRANK']
     mvptable['RECORD'] = mvptable['WINS'].astype(str) + '-' + mvptable['LOSSES'].astype(str)
 
