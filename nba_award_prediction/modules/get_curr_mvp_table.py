@@ -40,7 +40,7 @@ def get_curr_mvp_table(model):
     proba_predict = model.predict_proba(norm_df[features])
     df[['PREDICT_NOT', 'PREDICT_PROB']] = pd.DataFrame(proba_predict)
 
-    mvpdf = df[df['MVP'] == 1].reset_index(drop=True)
+    mvpdf = df.reset_index(drop=True)
     mvpdf['PREDICT_PROB'] = 100*mvpdf['PREDICT_PROB']
 
     mvptable = mvpdf[['PREDICT_PROB', 'PLAYER_NAME', 'AGE', 'GP', 'TeamName', 'W', 'L',
@@ -61,6 +61,6 @@ def get_curr_mvp_table(model):
 
     colorder = ['PROB%', 'PLAYER', 'AGE', 'GP', 'GP%', 'W', 'L',
                 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'TEAM', 'RANK', 'RECORD']
-    mvptable = mvptable[colorder].sort_values('PROB%', ascending=False).reset_index(drop=True)
+    mvptable = mvptable[colorder].sort_values('PROB%', ascending=False).head(10).reset_index(drop=True)
 
     return mvptable
