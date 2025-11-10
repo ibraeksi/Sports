@@ -70,10 +70,10 @@ with tab4:
     st.session_state["eastbench"] = eastbench
 
 with tab5:
-    st.markdown("""This year's All-Star game is expected to feature 3 teams of 8 players
-                with 2 USA teams and 1 World team. It is not yet clear if player positions
-                or conferences will play a role in the selection. But the following are the
-                current top 10 international players as predicted using the model
+    st.markdown("""This year's All-Star game is expected to feature a round-robin tournament
+                with 2 USA teams and 1 World team consisting of 8 players each.
+                It is not yet clear if player positions or conferences will play a role in the selection.
+                But the following are the current top 10 international players as predicted using the model
                 based on the selection criteria used in the All-Star tabs.""")
     st.dataframe(intallstars, hide_index=True)
     st.session_state["intallstars"] = intallstars
