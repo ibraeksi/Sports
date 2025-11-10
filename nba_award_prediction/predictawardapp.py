@@ -4,8 +4,8 @@ import pickle
 from pathlib import Path
 
 trained_model = Path(__file__).parents[0] / 'models/undersampling_random_forest_v03.pkl'
-trained_allstar_model = Path(__file__).parents[0] / 'models/allstarselection_random_forest_v01.pkl'
-player_bio_data = Path(__file__).parents[0] / 'data/raw/nba_historical_player_bio.csv'
+trained_allstar_model = Path(__file__).parents[0] / 'models/allstarselection_random_forest_v02.pkl'
+player_bio_data = Path(__file__).parents[0] / 'data/raw/nba_current_player_bio.csv'
 
 from modules.get_league_standings import get_league_standings
 from modules.get_curr_mvp_table import get_curr_mvp_table
@@ -19,7 +19,7 @@ st.set_page_config(
 
 st.subheader("2025-26 NBA Regular Season Award Predictions")
 
-tab1, tab2, tab3, tab4 = st.tabs([":chart_with_upwards_trend: Standings", ":crown: MVP Tracker", ":star: West All-Stars", ":star: East All-Stars"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([":chart_with_upwards_trend: Standings", ":crown: MVP Tracker", ":star: West All-Stars", ":star: East All-Stars", ":earth_africa: International All-Stars"])
 
 with tab1:
     left_sta, gap_sta, right_sta = st.columns([5.5, 1, 5.5], vertical_alignment="top")
@@ -50,21 +50,30 @@ with tab3:
     with open(trained_allstar_model, "rb") as allstar_model_file:
         allstar_model = pickle.load(allstar_model_file)
 
-    weststarters, eaststarters, westbench, eastbench = get_curr_allstars(allstar_model, bio)
+    weststarters, eaststarters, westbench, eastbench, intallstars = get_curr_allstars(allstar_model, bio)
 
-    st.markdown("Western Conference Starters")
+    st.markdown(":red-background[Western Conference Starters] *with 2 Backcourt(BC) and 3 Frontcourt(FC) players*")
     st.dataframe(weststarters, hide_index=True)
     st.session_state["weststarters"] = weststarters
 
-    st.markdown("Western Conference Bench")
+    st.markdown(":red-background[Western Conference Bench] *with 2 Backcourt(BC), 3 Frontcourt(FC) and 2 Wildcards(WC)*")
     st.dataframe(westbench, hide_index=True)
     st.session_state["westbench"] = westbench
 
 with tab4:
-    st.markdown("Eastern Conference Starters")
+    st.markdown(":blue-background[Eastern Conference Starters] *with 2 Backcourt(BC) and 3 Frontcourt(FC) players*")
     st.dataframe(eaststarters, hide_index=True)
     st.session_state["eaststarters"] = eaststarters
 
-    st.markdown("Eastern Conference Bench")
+    st.markdown(":blue-background[Eastern Conference Bench] *with 2 Backcourt(BC), 3 Frontcourt(FC) and 2 Wildcards(WC)*")
     st.dataframe(eastbench, hide_index=True)
     st.session_state["eastbench"] = eastbench
+
+with tab5:
+    st.markdown("""This year's All-Star game is expected to feature 3 teams of 8 players
+                with 2 USA teams and 1 World team. It is not yet clear if player positions
+                or conferences will play a role in the selection. But the following are the
+                current top 10 international players as predicted using the model
+                based on the selection criteria used in the All-Star tabs.""")
+    st.dataframe(intallstars, hide_index=True)
+    st.session_state["intallstars"] = intallstars
