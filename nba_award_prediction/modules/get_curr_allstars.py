@@ -8,7 +8,7 @@ def get_curr_allstars(model, bio):
     """
     Retrieves current season stats using nba_api and returns a table with all-stars
     model = Trained machine learning model to predict all-stars
-    bio = Player bios for adding position
+    bio = Player bios for adding position and country
     """
     # Get current stats
     pl = leaguedashplayerstats.LeagueDashPlayerStats(season='2025-26').get_data_frames()[0]
@@ -19,27 +19,9 @@ def get_curr_allstars(model, bio):
     df = pd.merge(pl, tm, left_on=['TEAM_ID'], right_on=['TeamID'], how='left')
 
     posdict = dict(bio[['PERSON_ID', 'POSITION']].values)
+    countrydict = dict(bio[['PERSON_ID', 'COUNTRY']].values)
     df['POS'] = df['PLAYER_ID'].map(posdict)
-
-    # Rookie player positions
-    rookieposdict = {'Ace Bailey':'SF', 'Amari Williams':'C', 'Asa Newell':'PF', 'Ben Saraf':'SG',
-       'Brooks Barnhizer':'SG', 'Caleb Love':'SG', 'Carter Bryant':'SF', 'Cedric Coward':'SG',
-       'Chaz Lanier':'SG', 'Chris Mañon':'SG', 'Chris Youngblood':'SG',
-       'Collin Murray-Boyles':'PF', 'Cooper Flagg':'SF', 'David Jones Garcia':'SF',
-       'Derik Queen':'C', 'Drake Powell':'SG', 'Dylan Cardwell':'C', 'Dylan Harper':'SG',
-       'Egor Dëmin':'PG', 'Hugo González':'SF', 'Hunter Dickinson':'C', 'Hunter Sallis':'SG',
-       'Jahmir Young':'PG', 'Jahmyl Telfort':'SF', 'Jamir Watkins':'SF',
-       'Jase Richardson':'SG', 'Javon Small':'PG', 'Jeremiah Fears':'PG',
-       'Joan Beringer':'C', 'Khaman Maluach':'C', 'Kobe Sanders':'SG', 'Kon Knueppel':'SF',
-       'Liam McNeeley':'SF', 'Mark Sears':'PG', 'Maxime Raynaud':'C', 'Micah Peavy':'SG',
-       'Miles Kelly':'PG', 'Mohamed Diawara':'PF', 'Moussa Cisse':'C', 'Myron Gardner':'SF',
-       'Nique Clifford':'SG', 'Noah Penda':'SF', 'Nolan Traore':'PG', 'Rasheer Fleming':'PF',
-       'Ryan Kalkbrenner':'C', 'Ryan Nembhard':'PG', 'Sion James':'SG', 'Taelon Peter':'SG',
-       'Tre Johnson':'SG', 'Tyrese Proctor':'PG', 'Tyson Etienne':'PG', 'VJ Edgecombe':'SG',
-       'Walter Clayton Jr.':'PG', 'Will Richard':'SG', 'Will Riley':'SF', 'Yang Hansen':'C',
-       'Yanic Konan Niederhäuser':'C'}
-
-    df.loc[df['POS'].isnull(), 'POS'] = df.loc[df['POS'].isnull(),'PLAYER_NAME'].map(rookieposdict)
+    df['COUNTRY'] = df['PLAYER_ID'].map(countrydict)
 
     # Frontcourt / Backcourt based on position
     frontcourt = ['F', 'SF', 'PF', 'C', 'C-F', 'F-C']
@@ -80,13 +62,13 @@ def get_curr_allstars(model, bio):
             df['W_PCT_' + conf + pos] = nba_group['WinPCT'].rank(pct = True)
 
     df = df.fillna(0)
-    nbanowmod = df[['PLAYER_NAME', 'CONF', 'GP_PCT', 'POS', 'TYPE', 'PTS_EB', 'FP_EB',
+    nbanowmod = df[['PLAYER_NAME', 'COUNTRY', 'CONF', 'GP_PCT', 'POS', 'TYPE', 'PTS_EB', 'FP_EB',
         'W_PCT_EB', 'PTS_EF', 'FP_EF', 'W_PCT_EF', 'PTS_WB', 'FP_WB',
         'W_PCT_WB', 'PTS_WF', 'FP_WF', 'W_PCT_WF']].rename(columns={'PLAYER_NAME':'PLAYER'})
 
     # Predict All-Stars
     cols = nbanowmod.columns
-    test_cols = cols.drop(['PLAYER', 'POS', 'CONF', 'TYPE'])
+    test_cols = cols.drop(['GP_PCT', 'COUNTRY', 'PLAYER', 'POS', 'CONF', 'TYPE'])
 
     new_predictions = model.predict(nbanowmod[test_cols])
     proba_predict = model.predict_proba(nbanowmod[test_cols])
@@ -103,7 +85,8 @@ def get_curr_allstars(model, bio):
         if proballstar.loc[i, 'PLAYER'] in eastallstars:
             continue
         else:
-            eastwildcard.append(proballstar.loc[i, 'PLAYER'])
+            if len(eastwildcard) < 2:
+                eastwildcard.append(proballstar.loc[i, 'PLAYER'])
 
     # Western Conference
     westallstars = nbanowmod.sort_values('PREDICT_WB', ascending=False).head(2)['PLAYER'].to_list() + nbanowmod.sort_values('PREDICT_WF', ascending=False).head(3)['PLAYER'].to_list() + nbanowmod.sort_values('PREDICT_WB', ascending=False).iloc[2:4]['PLAYER'].to_list() + nbanowmod.sort_values('PREDICT_WF', ascending=False).iloc[3:6]['PLAYER'].to_list()
@@ -114,13 +97,14 @@ def get_curr_allstars(model, bio):
         if proballstar.loc[i, 'PLAYER'] in westallstars:
             continue
         else:
-            westwildcard.append(proballstar.loc[i, 'PLAYER'])
+            if len(westwildcard) < 2:
+                westwildcard.append(proballstar.loc[i, 'PLAYER'])
 
     nbanowmod['PREDICT_PROB'] = 100*(1-nbanowmod['PREDICT_NOT'])
     allstarprob = dict(nbanowmod[['PLAYER','PREDICT_PROB']].values)
     df['PREDICT_PROB'] = df['PLAYER_NAME'].map(allstarprob)
 
-    finaldf = df[['PREDICT_PROB', 'TYPE', 'PLAYER_NAME', 'AGE', 'GP', 'TeamName', 'W', 'L',
+    finaldf = df[['PREDICT_PROB', 'TYPE', 'PLAYER_NAME', 'COUNTRY', 'AGE', 'GP', 'TeamName', 'W', 'L',
                         'Conference', 'PlayoffRank', 'WinPCT', 'WINS', 'LOSSES',
                         'GP_PCT', 'MPG', 'PPG', 'RPG', 'APG', 'TPG', 'SPG', 'BPG']].rename(
                             columns={'PLAYER_NAME':'PLAYER', 'TeamName':'TEAM', 'Conference':'CONF',
@@ -151,7 +135,18 @@ def get_curr_allstars(model, bio):
 
     finaleaststart = finaldf[finaldf['PLAYER'].isin(eaststarters)][colorder].sort_values(['POS', 'PROB%'], ascending=[True, False]).reset_index(drop=True)
     finalweststart = finaldf[finaldf['PLAYER'].isin(weststarters)][colorder].sort_values(['POS', 'PROB%'], ascending=[True, False]).reset_index(drop=True)
-    finaleastbench = finaldf[finaldf['PLAYER'].isin(eastbench)][colorder].sort_values(['POS', 'PROB%'], ascending=[True, False]).reset_index(drop=True)
-    finalwestbench = finaldf[finaldf['PLAYER'].isin(westbench)][colorder].sort_values(['POS', 'PROB%'], ascending=[True, False]).reset_index(drop=True)
 
-    return finalweststart, finaleaststart, finalwestbench, finaleastbench
+    finaleastbench = finaldf[finaldf['PLAYER'].isin(eastbench)][colorder].reset_index(drop=True)
+    finaleastbench.loc[finaleastbench['PLAYER'].isin(eastwildcard), 'POS'] = 'WC'
+    finaleastbench = finaleastbench.sort_values(['POS', 'PROB%'], ascending=[True, False]).reset_index(drop=True).head(7)
+
+    finalwestbench = finaldf[finaldf['PLAYER'].isin(westbench)][colorder].reset_index(drop=True)
+    finalwestbench.loc[finalwestbench['PLAYER'].isin(westwildcard), 'POS'] = 'WC'
+    finalwestbench = finalwestbench.sort_values(['POS', 'PROB%'], ascending=[True, False]).reset_index(drop=True).head(7)
+
+    # New All-Star Format (US vs. International players)
+    newcolorder = ['PROB%', 'POS', 'PLAYER', 'COUNTRY', 'AGE', 'GP', 'GP%', 'TEAM', 'RANK', 'RECORD',
+                   'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK']
+    intallstars = finaldf[finaldf['COUNTRY'] != 'USA'][newcolorder].sort_values('PROB%', ascending=False).reset_index(drop=True).head(10)
+
+    return finalweststart, finaleaststart, finalwestbench, finaleastbench, intallstars
