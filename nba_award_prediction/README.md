@@ -11,3 +11,4 @@ https://nba-award-predictions.streamlit.app/
 - Current Standings by Conference
 - Top 10 MVP Candidates on current date
 - All-Star Selection by Conference on current date
+- Top 10 International All-Star Candidates
