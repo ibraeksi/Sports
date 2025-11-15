@@ -99,9 +99,18 @@ def get_curr_allstars_newformat(model, bio):
     usteam1 = selectiondf[selectiondf['COUNTRY'] == 'USA'].sort_values(['WINS', 'PROB%'], ascending=[False, False]).head(8).reset_index(drop=True)
     usteam2 = selectiondf[selectiondf['COUNTRY'] == 'USA'].sort_values(['WINS', 'PROB%'], ascending=[False, False]).iloc[8:].reset_index(drop=True)
 
+    addusallstars = pd.DataFrame()
     if len(usteam2) < 8:
-        addusallstars = finaldf[finaldf['COUNTRY'] == 'USA'].iloc[13:13+(8-len(usteam2))]
-        usteam2 = pd.concat([usteam2, addusallstars]).reset_index(drop=True)
+        addcount = 0
+        i = 0
+        allusallstars = finaldf[finaldf['COUNTRY'] == 'USA'].reset_index(drop=True)
+        while len(usteam2) + addcount < 8:
+            if allusallstars.loc[i, 'PLAYER'] not in list(usteam1['PLAYER']) + list(usteam2['PLAYER']):
+                addusallstars = pd.concat([addusallstars, allusallstars.iloc[i:i+1]]).reset_index(drop=True)
+                addcount += 1
+            i += 1
+
+    usteam2 = pd.concat([usteam2, addusallstars]).sort_values(['WINS', 'PROB%'], ascending=[False, False]).reset_index(drop=True)
 
     usteam1out = usteam1[colorder].sort_values('PROB%', ascending=False).reset_index(drop=True)
     usteam2out = usteam2[colorder].sort_values('PROB%', ascending=False).reset_index(drop=True)
