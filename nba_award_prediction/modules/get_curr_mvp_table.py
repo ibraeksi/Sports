@@ -62,6 +62,6 @@ def get_curr_mvp_table(model):
 
     colorder = ['RK', 'PLAYER', 'AGE', 'GP', 'GP%', 'W', 'L',
                 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'TEAM', 'RANK', 'RECORD']
-    mvptable = mvptable[colorder].sort_values('PROB%', ascending=False).head(10).reset_index(drop=True)
+    mvptable = mvptable[colorder].sort_values('RK', ascending=True).head(10).reset_index(drop=True)
 
     return mvptable
