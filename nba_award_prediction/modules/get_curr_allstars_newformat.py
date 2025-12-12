@@ -78,9 +78,6 @@ def get_curr_allstars_newformat(model, bio):
     finaldf['GP%'] = np.round(100*finaldf['GP%'],2)
     finaldf['RANK'] = finaldf['CONF'] + ' ' + finaldf['TEAMRANK']
     finaldf['RECORD'] = finaldf['WINS'].astype(str) + '-' + finaldf['LOSSES'].astype(str)
-
-    # Special Case for certain players
-    finaldf.loc[finaldf['PLAYER'] == 'Karl-Anthony Towns', 'COUNTRY'] = 'Dominican Republic'
     finaldf = finaldf.sort_values('PROB%', ascending=False).reset_index(drop=True)
 
     # Per Conference
