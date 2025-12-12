@@ -30,10 +30,10 @@ def get_curr_mvp_table(model):
     df = df.reset_index(drop=True)
     df[['RPG', 'APG', 'TPG', 'SPG', 'BPG', 'FPG', 'PMPG']] = df[['REB', 'AST', 'TOV', 'STL', 'BLK', 'NBA_FANTASY_PTS', 'PLUS_MINUS']].div(df['GP'], axis=0)
 
-    norm_df = df[['WinPCT', 'GP_PCT', 'MPG', 'PPG', 'RPG', 'APG', 'TPG', 'SPG', 'BPG', 'FPG', 'PMPG']].rank(pct = True)
+    norm_df = df[['W_PCT', 'WinPCT', 'GP_PCT', 'MPG', 'PPG', 'RPG', 'APG', 'TPG', 'SPG', 'BPG', 'FPG', 'PMPG']].rank(pct = True)
     norm_df['PlayoffRank'] = df['PlayoffRank'].rank(pct=True, ascending=False)
 
-    features = ['WinPCT', 'FPG', 'PlayoffRank']
+    features = ['W_PCT', 'WinPCT', 'FPG', 'PPG', 'PMPG', 'PlayoffRank']
     new_predictions = model.predict(norm_df[features])
     df['MVP'] = new_predictions
 

@@ -3,7 +3,7 @@ import pandas as pd
 import pickle
 from pathlib import Path
 
-trained_model = Path(__file__).parents[0] / 'models/undersampling_random_forest_v03.pkl'
+trained_model = Path(__file__).parents[0] / 'models/mvptable_random_forest_v01.pkl'
 trained_allstar_model = Path(__file__).parents[0] / 'models/allstarselection_random_forest_v02.pkl'
 trained_new_allstar_model = Path(__file__).parents[0] / 'models/newformat_allstarselection_random_forest_v01.pkl'
 player_bio_data = Path(__file__).parents[0] / 'data/raw/nba_current_player_bio.csv'
