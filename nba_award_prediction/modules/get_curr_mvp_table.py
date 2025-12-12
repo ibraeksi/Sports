@@ -58,7 +58,7 @@ def get_curr_mvp_table(model):
     mvptable['GP%'] = np.round(100*mvptable['GP%'],2)
     mvptable['RANK'] = mvptable['CONF'] + ' ' + mvptable['TEAMRANK']
     mvptable['RECORD'] = mvptable['WINS'].astype(str) + '-' + mvptable['LOSSES'].astype(str)
-    mvptable['RK'] = mvptable['PREDICT_PROB'].rank(ascending=False).apply(np.floor).astype(int)
+    mvptable['RK'] = mvptable['PROB%'].rank(ascending=False).apply(np.floor).astype(int)
 
     colorder = ['RK', 'PLAYER', 'AGE', 'GP', 'GP%', 'W', 'L',
                 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'TEAM', 'RANK', 'RECORD']
