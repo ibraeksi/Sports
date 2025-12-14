@@ -1,25 +1,14 @@
 import plotly.graph_objects as go
 
-def plot_tripdub(df):
+def plot_tripdub(df, team_names):
     """
     Creates a scattergeo plot showing triple-double counts per location
     df = Dataframe of all triple-doubles with their locations
+    team_names = Team names and their abbreviations
     """
     grouped_df = df.groupby(['POS']).agg({'DATE': 'count', 'LAT': 'mean', 'LON': 'mean'}).reset_index().rename(columns={'DATE':'COUNT'})
 
-    teamnamedict = {'DAL': 'Dallas Mavericks', 'ORL': 'Orlando Magic', 'SAS': 'San Antonio Spurs', 'DEN': 'Denver Nuggets',
-                    'NJN': 'New Jersey Nets', 'BKN': 'Brooklyn Nets', 'CHP': 'Chicago Packers', 'CHZ': 'Chicago Zephyrs',
-                    'BLB': 'Baltimore Bullets', 'BAL': 'Baltimore Bullets', 'CAP': 'Capitol Bullets', 'WSB': 'Washington Bullets',
-                    'WAS': 'Washington Wizards', 'PHW': 'Philadelphia Warriors', 'SFW': 'San Francisco Warriors', 'GSW': 'Golden State Warriors',
-                    'BUF': 'Buffalo Braves', 'SDC': 'San Diego Clippers', 'LAC': 'Los Angeles Clippers', 'MNL': 'Minneapolis Lakers', 'LAL': 'Los Angeles Lakers',
-                    'VAN': 'Vancouver Grizzlies', 'MEM': 'Memphis Grizzlies', 'MIL': 'Milwaukee Bucks', 'PHO': 'Phoenix Suns', 'MIA': 'Miami Heat',
-                    'IND': 'Indiana Pacers', 'DET': 'Detroit Pistons', 'NYK': 'New York Knicks', 'POR': 'Portland Trail Blazers',
-                    'OKC': 'Oklahoma City Thunder', 'CLE': 'Cleveland Cavaliers', 'TOR': 'Toronto Raptors', 'NOJ': 'New Orleans Jazz',
-                    'NOP': 'New Orleans Pelicans', 'CHA': 'Charlotte Hornets', 'MLH': 'Milwaukee Hawks', 'STL': 'St. Louis Hawks',
-                    'ATL': 'Atlanta Hawks', 'MIN': 'Minnesota Timberwolves', 'BOS': 'Boston Celtics', 'SDR': 'San Diego Rockets',
-                    'HOU': 'Houston Rockets', 'CHI': 'Chicago Bulls', 'UTA': 'Utah Jazz', 'SYR': 'Syracuse Nationals',
-                    'PHI': 'Philadelphia 76ers', 'SEA': 'Seattle Supersonics', 'ROC': 'Rochester Royals', 'CIN': 'Cincinnati Royals',
-                    'KCK': 'Kansas City Kings', 'SAC': 'Sacramento Kings'}
+    teamnamedict = {v: k for k, v in team_names.items()}
 
     grouped_df['NAME'] = grouped_df['POS'].map(teamnamedict)
     grouped_df['TEXT'] = grouped_df['COUNT'].astype(str) + ' at ' + grouped_df['NAME']

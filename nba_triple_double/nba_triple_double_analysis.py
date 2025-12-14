@@ -30,6 +30,23 @@ st.session_state["curr_df"] = curr_df
 combined = pd.concat([historical_df, curr_df]).reset_index(drop=True)
 st.session_state["combined"] = combined
 
+teamnamedict = {'Dallas Mavericks': 'DAL', 'Orlando Magic': 'ORL', 'San Antonio Spurs': 'SAS',
+                'Denver Nuggets': 'DEN', 'New Jersey Nets': 'NJN', 'Brooklyn Nets': 'BKN',
+                'Chicago Packers': 'CHP', 'Chicago Zephyrs': 'CHZ', 'Baltimore Bullets': 'BAL',
+                'Capitol Bullets': 'CAP', 'Washington Bullets': 'WSB', 'Washington Wizards': 'WAS',
+                'Philadelphia Warriors': 'PHW', 'San Francisco Warriors': 'SFW', 'Golden State Warriors': 'GSW',
+                'Buffalo Braves': 'BUF', 'San Diego Clippers': 'SDC', 'Los Angeles Clippers': 'LAC',
+                'Minneapolis Lakers': 'MNL', 'Los Angeles Lakers': 'LAL', 'Vancouver Grizzlies': 'VAN',
+                'Memphis Grizzlies': 'MEM', 'Milwaukee Bucks': 'MIL', 'Phoenix Suns': 'PHO',
+                'Miami Heat': 'MIA', 'Indiana Pacers': 'IND', 'Detroit Pistons': 'DET',
+                'New York Knicks': 'NYK', 'Portland Trail Blazers': 'POR', 'Oklahoma City Thunder': 'OKC',
+                'Cleveland Cavaliers': 'CLE', 'Toronto Raptors': 'TOR', 'New Orleans Jazz': 'NOJ',
+                'New Orleans Pelicans': 'NOP', 'Charlotte Hornets': 'CHA', 'Milwaukee Hawks': 'MLH',
+                'St. Louis Hawks': 'STL', 'Atlanta Hawks': 'ATL', 'Minnesota Timberwolves': 'MIN',
+                'Boston Celtics': 'BOS', 'San Diego Rockets': 'SDR', 'Houston Rockets': 'HOU',
+                'Chicago Bulls': 'CHI', 'Utah Jazz': 'UTA', 'Syracuse Nationals': 'SYR',
+                'Philadelphia 76ers': 'PHI', 'Seattle Supersonics': 'SEA', 'Rochester Royals': 'ROC',
+                'Cincinnati Royals': 'CIN', 'Kansas City Kings': 'KCK', 'Sacramento Kings': 'SAC'}
 
 tab1, tab2, tab3 = st.tabs([":chart_with_upwards_trend: All-Time TD Leaders", ":page_with_curl: All-Time TD Game Logs", ":round_pushpin: All-Time TD Locations"])
 
@@ -43,14 +60,20 @@ with tab1:
 
 with tab2:
     displaycols = ['DATE', 'PLAYER', 'TEAM', 'PTS', 'REB', 'AST', 'STL', 'BLK', 'RES', 'LOC', 'VS']
-    playerselect = st.text_input("Filter for player")
+    selected_teams = st.multiselect("Select Team", teamnamedict.keys(),
+                                 max_selections=4, width="stretch",
+                                 accept_new_options=False, default=None)
+    st.session_state["selected_teams"] = selected_teams
 
-    if playerselect is not None:
-        df = combined[combined['PLAYER'].str.contains(playerselect)][displaycols]
+    if len(selected_teams) > 0:
+        teamlist = []
+        for team in selected_teams:
+            teamlist.append(teamnamedict[team])
+        df = combined[combined['TEAM'].isin(teamlist)][displaycols]
     else:
-        df = combined[displaycols]
+        df = combined[combined['TEAM'] == 'DEN'][displaycols]
 
     st.dataframe(df.sort_values('PTS', ascending=False), hide_index=True)
 
 with tab3:
-    st.plotly_chart(plot_tripdub(combined), use_container_width=False)
+    st.plotly_chart(plot_tripdub(combined, teamnamedict), use_container_width=False)
