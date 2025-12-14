@@ -60,8 +60,8 @@ with tab1:
 
 with tab2:
     displaycols = ['DATE', 'PLAYER', 'TEAM', 'PTS', 'REB', 'AST', 'STL', 'BLK', 'RES', 'LOC', 'VS']
-    selected_teams = st.multiselect("Select Team", teamnamedict.keys(),
-                                 max_selections=4, width="stretch",
+    selected_teams = st.multiselect("Filter by Team", teamnamedict.keys(),
+                                 max_selections=5, width="stretch",
                                  accept_new_options=False, default=None)
     st.session_state["selected_teams"] = selected_teams
 
@@ -71,7 +71,7 @@ with tab2:
             teamlist.append(teamnamedict[team])
         df = combined[combined['TEAM'].isin(teamlist)][displaycols]
     else:
-        df = combined[combined['TEAM'] == 'DEN'][displaycols]
+        df = combined[displaycols]
 
     st.dataframe(df.sort_values('PTS', ascending=False), hide_index=True)
 
