@@ -4,4 +4,4 @@ In this project, I used the Python requests library to retrieve player statistic
 
 The analysis is hosted on Streamlit and can be viewed on:
 
-https://nba-trip-dub-analysis.streamlit.app/
+https://nba-triple-double-analysis.streamlit.app/
