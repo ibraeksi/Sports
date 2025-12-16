@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 historical_data = Path(__file__).parents[0] / 'data/processed/nba_historical_triple_doubles_wlocations.csv'
+curr_data = Path(__file__).parents[0] / 'data/processed/nba_current_triple_doubles.csv'
 team_locations = Path(__file__).parents[0] / 'data/raw/NBA_Stadium_Locations.csv'
 
 from modules.get_curr_tripdub import get_curr_tripdub
@@ -16,11 +17,14 @@ st.set_page_config(
 
 st.subheader("NBA Career Triple-Double Analysis")
 
-# All-Star Prediction using Old Format
+# All-Time Triple-Doubles
 historical_df = pd.read_csv(historical_data)
 st.session_state["historical_df"] = historical_df
 
-curr_df = get_curr_tripdub()
+# Current Season Triple-Doubles
+curr_df = pd.read_csv(curr_data)
+st.session_state["curr_df"] = curr_df
+
 loc_df = pd.read_csv(team_locations)
 curr_df['POS'] = curr_df.apply(lambda x: x['TEAM'] if x['LOC'] == 'HOME' else x['VS'], axis=1)
 curr_df['LAT'] = curr_df['LOC'].map(dict(zip(loc_df['TEAM'], loc_df['LAT'])))
