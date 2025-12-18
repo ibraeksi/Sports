@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from pathlib import Path
 
 historical_data = Path(__file__).parents[0] / 'data/processed/nba_historical_triple_doubles_wlocations.csv'
@@ -56,7 +57,8 @@ tab1, tab2, tab3 = st.tabs([":chart_with_upwards_trend: All-Time TD Leaders", ":
 
 with tab1:
     count = combined['PLAYER'].value_counts().rename_axis('PLAYER').reset_index(name='TD')
-    count['RANK'] = count.index + 1
+    count['RANK'] = count['TD'].rank(ascending=False).apply(np.floor).astype(int)
+    count = count.sort_values(['TD', 'PLAYER'], ascending=[False, True])
 
     left_rank, right_rank = st.columns([4,8], vertical_alignment="top")
     with left_rank:
