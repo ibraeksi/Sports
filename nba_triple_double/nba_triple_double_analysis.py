@@ -58,7 +58,7 @@ tab1, tab2, tab3 = st.tabs([":chart_with_upwards_trend: All-Time TD Leaders", ":
 with tab1:
     count = combined['PLAYER'].value_counts().rename_axis('PLAYER').reset_index(name='TD')
     count['RANK'] = count['TD'].rank(ascending=False, method='min').apply(np.floor).astype(int)
-    count[['FirstName','LastName']] = count['PLAYER'].str.split(' ',expand=True)
+    count[['FirstName','LastName', 'Jr']] = count['PLAYER'].str.split(' ',expand=True)
     count = count.sort_values(['TD', 'LastName'], ascending=[False, True])
 
     left_rank, right_rank = st.columns([4,8], vertical_alignment="top")
