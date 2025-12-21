@@ -7,7 +7,7 @@ historical_data = Path(__file__).parents[0] / 'data/processed/nba_historical_tri
 curr_data = Path(__file__).parents[0] / 'data/processed/nba_current_triple_doubles.csv'
 team_locations = Path(__file__).parents[0] / 'data/raw/NBA_Stadium_Locations.csv'
 
-from modules.get_curr_tripdub import get_curr_tripdub
+from modules.all_time_td_stats import all_time_td_stats
 from modules.plot_tripdub import plot_tripdub
 
 st.set_page_config(
@@ -37,7 +37,7 @@ st.session_state["combined"] = combined
 
 teamnamedict = {'Dallas Mavericks': 'DAL', 'Orlando Magic': 'ORL', 'San Antonio Spurs': 'SAS',
                 'Denver Nuggets': 'DEN', 'New Jersey Nets': 'NJN', 'Brooklyn Nets': 'BKN',
-                'Chicago Packers': 'CHP', 'Chicago Zephyrs': 'CHZ', 'Baltimore Bullets': 'BAL',
+                'Chicago Packers': 'CHP', 'Chicago Zephyrs': 'CHZ', 'Baltimore Bullets': 'BAL', 'Baltimore Bullets': 'BLB',
                 'Capitol Bullets': 'CAP', 'Washington Bullets': 'WSB', 'Washington Wizards': 'WAS',
                 'Philadelphia Warriors': 'PHW', 'San Francisco Warriors': 'SFW', 'Golden State Warriors': 'GSW',
                 'Buffalo Braves': 'BUF', 'San Diego Clippers': 'SDC', 'Los Angeles Clippers': 'LAC',
@@ -56,14 +56,13 @@ teamnamedict = {'Dallas Mavericks': 'DAL', 'Orlando Magic': 'ORL', 'San Antonio 
 tab1, tab2, tab3 = st.tabs([":chart_with_upwards_trend: All-Time TD Leaders", ":page_with_curl: All-Time TD Game Logs", ":round_pushpin: All-Time TD Locations"])
 
 with tab1:
-    count = combined['PLAYER'].value_counts().rename_axis('PLAYER').reset_index(name='TD')
-    count['RANK'] = count['TD'].rank(ascending=False, method='min').apply(np.floor).astype(int)
-    count[['FirstName','LastName', 'Jr']] = count['PLAYER'].str.split(' ',expand=True)
-    count = count.sort_values(['TD', 'LastName', 'FirstName'], ascending=[False, True, True])
-
-    left_rank, right_rank = st.columns([4,8], vertical_alignment="top")
+    left_rank, gap_rank, right_rank = st.columns([3, 0.25, 8.75], vertical_alignment="top")
     with left_rank:
-        st.dataframe(count[['RANK', 'PLAYER', 'TD']], hide_index=True)
+        num_td = st.slider("Min. Number of Triple-Doubles", 0, 210, 10)
+        num_winpct = st.slider("Min. Winning % in Those Games", 0, 100, 50)
+    with right_rank:
+        all_time_td_df = all_time_td_stats(combined, num_td, num_winpct)
+        st.dataframe(all_time_td_df, hide_index=True)
 
 with tab2:
     displaycols = ['DATE', 'PLAYER', 'TEAM', 'PTS', 'REB', 'AST', 'STL', 'BLK', 'RES', 'LOC', 'VS']
