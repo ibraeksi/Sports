@@ -10,6 +10,10 @@ def plot_tripdub(df, team_names):
 
     teamnamedict = {v: k for k, v in team_names.items()}
 
+    # Add Neutral Site
+    for i in range(1,36):
+        teamnamedict['N'+str(i)] = 'Neutral Site'
+
     grouped_df['NAME'] = grouped_df['POS'].map(teamnamedict)
     grouped_df['TEXT'] = grouped_df['COUNT'].astype(str) + ' at ' + grouped_df['NAME']
 
