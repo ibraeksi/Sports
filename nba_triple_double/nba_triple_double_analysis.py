@@ -18,21 +18,26 @@ st.set_page_config(
 
 st.subheader("NBA Career Triple-Double Analysis")
 
-# All-Time Triple-Doubles
-historical_df = pd.read_csv(historical_data)
-st.session_state["historical_df"] = historical_df
+# Read Triple-Doubles only once in the beginning
+@st.cache_resource
+def read_tripdub_data():
+    # All-Time Triple-Doubles
+    historical_df = pd.read_csv(historical_data)
+    st.session_state["historical_df"] = historical_df
 
-# Current Season Triple-Doubles
-curr_df = get_curr_tripdub()
-st.session_state["curr_df"] = curr_df
+    # Current Season Triple-Doubles
+    curr_df = get_curr_tripdub()
+    st.session_state["curr_df"] = curr_df
 
-loc_df = pd.read_csv(team_locations)
-curr_df['POS'] = curr_df.apply(lambda x: x['TEAM'] if x['LOC'] == 'HOME' else x['VS'], axis=1)
-curr_df['LAT'] = curr_df['LOC'].map(dict(zip(loc_df['TEAM'], loc_df['LAT'])))
-curr_df['LON'] = curr_df['LOC'].map(dict(zip(loc_df['TEAM'], loc_df['LON'])))
-st.session_state["curr_df"] = curr_df
+    loc_df = pd.read_csv(team_locations)
+    curr_df['POS'] = curr_df.apply(lambda x: x['TEAM'] if x['LOC'] == 'HOME' else x['VS'], axis=1)
+    curr_df['LAT'] = curr_df['LOC'].map(dict(zip(loc_df['TEAM'], loc_df['LAT'])))
+    curr_df['LON'] = curr_df['LOC'].map(dict(zip(loc_df['TEAM'], loc_df['LON'])))
+    st.session_state["curr_df"] = curr_df
 
-combined = pd.concat([historical_df, curr_df]).reset_index(drop=True)
+    return pd.concat([historical_df, curr_df]).reset_index(drop=True)
+
+combined = read_tripdub_data()
 st.session_state["combined"] = combined
 
 teamnamedict = {'Dallas Mavericks': 'DAL', 'Orlando Magic': 'ORL', 'San Antonio Spurs': 'SAS',
