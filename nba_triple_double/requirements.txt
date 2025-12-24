@@ -5,3 +5,4 @@ pandas
 matplotlib
 seaborn
 plotly
+nba_api
