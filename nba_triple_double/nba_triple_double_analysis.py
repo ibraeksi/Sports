@@ -4,11 +4,11 @@ import numpy as np
 from pathlib import Path
 
 historical_data = Path(__file__).parents[0] / 'data/processed/nba_historical_triple_doubles_wlocations.csv'
-curr_data = Path(__file__).parents[0] / 'data/processed/nba_current_triple_doubles.csv'
 team_locations = Path(__file__).parents[0] / 'data/raw/NBA_Stadium_Locations.csv'
 
 from modules.all_time_td_stats import all_time_td_stats
 from modules.plot_tripdub import plot_tripdub
+from modules.get_curr_tripdub import get_curr_tripdub
 
 st.set_page_config(
     page_title="NBA Triple-Doubles",
@@ -23,7 +23,7 @@ historical_df = pd.read_csv(historical_data)
 st.session_state["historical_df"] = historical_df
 
 # Current Season Triple-Doubles
-curr_df = pd.read_csv(curr_data)
+curr_df = get_curr_tripdub()
 st.session_state["curr_df"] = curr_df
 
 loc_df = pd.read_csv(team_locations)
