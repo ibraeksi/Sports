@@ -20,7 +20,7 @@ st.subheader("NBA Career Triple-Double Analysis")
 
 # Read Triple-Doubles only once in the beginning
 @st.cache_resource
-def read_tripdub_data():
+def all_triple_doubles():
     # All-Time Triple-Doubles
     historical_df = pd.read_csv(historical_data)
     st.session_state["historical_df"] = historical_df
@@ -37,7 +37,7 @@ def read_tripdub_data():
 
     return pd.concat([historical_df, curr_df]).reset_index(drop=True)
 
-combined = read_tripdub_data()
+combined = all_triple_doubles()
 st.session_state["combined"] = combined
 
 teamnamedict = {'Dallas Mavericks': 'DAL', 'Orlando Magic': 'ORL', 'San Antonio Spurs': 'SAS',
