@@ -4,6 +4,7 @@ import numpy as np
 from pathlib import Path
 
 historical_data = Path(__file__).parents[0] / 'data/processed/nba_historical_triple_doubles_wlocations.csv'
+current_data = Path(__file__).parents[0] / 'data/processed/nba_current_triple_doubles.csv'
 team_locations = Path(__file__).parents[0] / 'data/raw/NBA_Stadium_Locations.csv'
 
 from modules.all_time_td_stats import all_time_td_stats
@@ -26,7 +27,7 @@ def all_triple_doubles():
     st.session_state["historical_df"] = historical_df
 
     # Current Season Triple-Doubles
-    curr_df = get_curr_tripdub()
+    curr_df = pd.read_csv(current_data)
     st.session_state["curr_df"] = curr_df
 
     loc_df = pd.read_csv(team_locations)
@@ -39,6 +40,19 @@ def all_triple_doubles():
 
 combined = all_triple_doubles()
 st.session_state["combined"] = combined
+
+# Update Current Triple-Doubles only if button is clicked
+@st.cache_resource
+def update_current_triple_doubles(latest_date):
+    update_df = get_curr_tripdub(latest_date)
+    if len(update_df) > 0:
+        loc_df = pd.read_csv(team_locations)
+        update_df['POS'] = update_df.apply(lambda x: x['TEAM'] if x['LOC'] == 'HOME' else x['VS'], axis=1)
+        update_df['LAT'] = update_df['LOC'].map(dict(zip(loc_df['TEAM'], loc_df['LAT'])))
+        update_df['LON'] = update_df['LOC'].map(dict(zip(loc_df['TEAM'], loc_df['LON'])))
+
+    return update_df
+
 
 teamnamedict = {'Dallas Mavericks': 'DAL', 'Orlando Magic': 'ORL', 'San Antonio Spurs': 'SAS',
                 'Denver Nuggets': 'DEN', 'New Jersey Nets': 'NJN', 'Brooklyn Nets': 'BKN',
@@ -58,6 +72,17 @@ teamnamedict = {'Dallas Mavericks': 'DAL', 'Orlando Magic': 'ORL', 'San Antonio 
                 'Philadelphia 76ers': 'PHI', 'Seattle Supersonics': 'SEA', 'Rochester Royals': 'ROC',
                 'Cincinnati Royals': 'CIN', 'Kansas City Kings': 'KCK', 'Sacramento Kings': 'SAC'}
 
+if 'clicked' not in st.session_state:
+    st.session_state.clicked = False
+
+if "disabled" not in st.session_state:
+    st.session_state.disabled = False
+
+def click_button():
+    st.session_state.clicked = True
+    st.session_state.disabled = True
+
+
 tab1, tab2, tab3 = st.tabs([":chart_with_upwards_trend: All-Time TD Leaders", ":page_with_curl: All-Time TD Game Logs", ":round_pushpin: All-Time TD Locations"])
 
 with tab1:
@@ -65,6 +90,27 @@ with tab1:
     with left_rank:
         num_td = st.slider("Min. Number of Triple-Doubles", 0, 210, 10)
         num_winpct = st.slider("Min. Winning % in Those Games", 0, 100, 50)
+
+        last_available_date = combined['DATE'].max()
+        st.session_state["last_date"] = last_available_date
+
+        if st.session_state.clicked is False:
+            st.markdown("\n\n")
+            day_after_game = (pd.to_datetime(last_available_date, format='%Y-%m-%d') + pd.Timedelta(1, unit='D')).strftime('%Y-%m-%d')
+            st.markdown(f"Last updated on {day_after_game}")
+
+        last_game_date = (pd.Timestamp.today('US/Eastern') - pd.Timedelta(1, unit='D')).strftime('%Y-%m-%d')
+        if last_game_date > combined['DATE'].max():
+            if st.button("Update Current Season", on_click=click_button, disabled=st.session_state.disabled):
+                latest_data = update_current_triple_doubles(last_available_date)
+                combined = pd.concat([combined, latest_data]).reset_index(drop=True)
+                st.session_state["combined"] = combined
+                st.session_state["last_date"] = last_game_date
+
+                st.markdown("\n\n")
+                today_date = pd.Timestamp.today('US/Eastern').strftime('%Y-%m-%d')
+                st.markdown(f"Last updated on {today_date}")
+
     with right_rank:
         all_time_td_df = all_time_td_stats(combined, num_td, num_winpct)
         st.dataframe(all_time_td_df, hide_index=True)
