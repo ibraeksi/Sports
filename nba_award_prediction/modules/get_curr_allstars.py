@@ -45,7 +45,7 @@ def get_curr_allstars(model, bio):
     df['PPG'] = df['PTS']/df['GP']
 
     df.drop(df.loc[df['MPG'] < 24].index, inplace=True)
-    df.drop(df.loc[df['GP_PCT'] < 0.4].index, inplace=True)
+    df.drop(df.loc[df['GP_PCT'] < 0.5].index, inplace=True)
 
     df = df.reset_index(drop=True)
     df[['RPG', 'APG', 'TPG', 'SPG', 'BPG', 'FPG', 'PMPG']] = df[['REB', 'AST', 'TOV', 'STL', 'BLK', 'NBA_FANTASY_PTS', 'PLUS_MINUS']].div(df['GP'], axis=0)
