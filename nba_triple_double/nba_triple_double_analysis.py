@@ -36,15 +36,15 @@ def all_triple_doubles():
     curr_df['LON'] = curr_df['LOC'].map(dict(zip(loc_df['TEAM'], loc_df['LON'])))
     st.session_state["curr_df"] = curr_df
 
-    return pd.concat([historical_df, curr_df]).reset_index(drop=True)
+    return pd.concat([historical_df, curr_df]).reset_index(drop=True), len(curr_df)
 
-combined = all_triple_doubles()
+combined, num_curr_td = all_triple_doubles()
 st.session_state["combined"] = combined
 
 # Update Current Triple-Doubles only if button is clicked
 @st.cache_resource
-def update_current_triple_doubles(latest_date):
-    update_df = get_curr_tripdub(latest_date)
+def update_current_triple_doubles(latest_date, latest_num_td):
+    update_df = get_curr_tripdub(latest_date, latest_num_td)
     if len(update_df) > 0:
         loc_df = pd.read_csv(team_locations)
         update_df['POS'] = update_df.apply(lambda x: x['TEAM'] if x['LOC'] == 'HOME' else x['VS'], axis=1)
@@ -102,7 +102,7 @@ with tab1:
         last_game_date = (pd.Timestamp.today('US/Eastern') - pd.Timedelta(1, unit='D')).strftime('%Y-%m-%d')
         if last_game_date > combined['DATE'].max():
             if st.button("Update Current Season", on_click=click_button, disabled=st.session_state.disabled):
-                latest_data = update_current_triple_doubles(last_available_date)
+                latest_data = update_current_triple_doubles(last_available_date, num_curr_td)
                 combined = pd.concat([combined, latest_data]).reset_index(drop=True)
                 st.session_state["combined"] = combined
                 st.session_state["last_date"] = last_game_date
