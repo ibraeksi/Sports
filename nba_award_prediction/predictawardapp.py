@@ -14,12 +14,12 @@ from modules.get_curr_allstars import get_curr_allstars
 from modules.get_curr_allstars_newformat import get_curr_allstars_newformat
 
 st.set_page_config(
-    page_title="NBA Award Predictions",
+    page_title="NBA Predictions",
     page_icon=":basketball:",
     layout="wide"
 )
 
-st.subheader("2025-26 NBA Regular Season Award Predictions")
+st.subheader("2025-26 NBA Regular Season Predictions")
 
 # MVP Predictions
 with open(trained_model, "rb") as model_file:
