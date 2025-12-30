@@ -6,12 +6,14 @@ from pathlib import Path
 trained_model = Path(__file__).parents[0] / 'models/mvptable_random_forest_v01.pkl'
 trained_allstar_model = Path(__file__).parents[0] / 'models/allstarselection_random_forest_v02.pkl'
 trained_new_allstar_model = Path(__file__).parents[0] / 'models/newformat_allstarselection_random_forest_v01.pkl'
+trained_rookie_model = Path(__file__).parents[0] / 'models/allrookie_random_forest_v01.pkl'
 player_bio_data = Path(__file__).parents[0] / 'data/raw/nba_current_player_bio.csv'
 
 from modules.get_league_standings import get_league_standings
 from modules.get_curr_mvp_table import get_curr_mvp_table
 from modules.get_curr_allstars import get_curr_allstars
 from modules.get_curr_allstars_newformat import get_curr_allstars_newformat
+from modules.get_curr_allrookie_teams import get_curr_allrookie_teams
 
 st.set_page_config(
     page_title="NBA Predictions",
@@ -96,7 +98,14 @@ def new_format_allstar():
     elif selectteam == 'US #2':
         st.dataframe(usteam2, hide_index=True)
 
-tab1, tab2, tab3, tab4 = st.tabs([":chart_with_upwards_trend: Standings", ":crown: MVP Tracker", ":star: Old Format All-Stars", ":earth_africa: U.S. vs. World All-Stars"])
+# All-Rookie Predictions
+with open(trained_rookie_model, "rb") as rookie_model_file:
+    rookie_model = pickle.load(rookie_model_file)
+
+allrookieteams = get_curr_allrookie_teams(rookie_model)
+st.session_state["allrookieteams"] = allrookieteams
+
+tab1, tab2, tab3, tab4, tab5 = st.tabs([":chart_with_upwards_trend: Standings", ":crown: MVP Tracker", ":star: Old Format All-Stars", ":earth_africa: U.S. vs. World All-Stars", ":new: All-Rookie Teams"])
 
 with tab1:
     left_sta, gap_sta, right_sta = st.columns([5.5, 1, 5.5], vertical_alignment="top")
@@ -113,7 +122,6 @@ with tab1:
 
 with tab2:
     st.dataframe(mvptable, hide_index=True)
-    st.session_state["mvptable"] = mvptable
 
 with tab3:
     old_format_allstar()
@@ -133,3 +141,10 @@ with tab4:
                     But for the purpose of this study, the players are grouped based on team wins so that
                     U.S. Team #1 features players from teams with higher number of wins.""")
     new_format_allstar()
+
+with tab5:
+    st.markdown("FIRST TEAM")
+    st.dataframe(allrookieteams.head(5), hide_index=True)
+    st.markdown("\n\n")
+    st.markdown("SECOND TEAM")
+    st.dataframe(allrookieteams.tail(5), hide_index=True)
