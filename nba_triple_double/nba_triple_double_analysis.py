@@ -99,17 +99,17 @@ with tab1:
             day_after_game = (pd.to_datetime(last_available_date, format='%Y-%m-%d') + pd.Timedelta(1, unit='D')).strftime('%Y-%m-%d')
             st.markdown(f"Last updated on {day_after_game}")
 
-        last_game_date = (pd.Timestamp.today('US/Eastern') - pd.Timedelta(1, unit='D')).strftime('%Y-%m-%d')
-        if last_game_date > combined['DATE'].max():
-            if st.button("Update Current Season", on_click=click_button, disabled=st.session_state.disabled):
-                latest_data = update_current_triple_doubles(last_available_date, num_curr_td)
-                combined = pd.concat([combined, latest_data]).reset_index(drop=True)
-                st.session_state["combined"] = combined
-                st.session_state["last_date"] = last_game_date
+        # last_game_date = (pd.Timestamp.today('US/Eastern') - pd.Timedelta(1, unit='D')).strftime('%Y-%m-%d')
+        # if last_game_date > combined['DATE'].max():
+        #     if st.button("Update Current Season", on_click=click_button, disabled=st.session_state.disabled):
+        #         latest_data = update_current_triple_doubles(last_available_date, num_curr_td)
+        #         combined = pd.concat([combined, latest_data]).reset_index(drop=True)
+        #         st.session_state["combined"] = combined
+        #         st.session_state["last_date"] = last_game_date
 
-                st.markdown("\n\n")
-                today_date = pd.Timestamp.today('US/Eastern').strftime('%Y-%m-%d')
-                st.markdown(f"Last updated on {today_date}")
+        #         st.markdown("\n\n")
+        #         today_date = pd.Timestamp.today('US/Eastern').strftime('%Y-%m-%d')
+        #         st.markdown(f"Last updated on {today_date}")
 
     with right_rank:
         all_time_td_df = all_time_td_stats(combined, num_td, num_winpct)
