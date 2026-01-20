@@ -33,7 +33,7 @@ def get_curr_allstars_newformat(model, bio):
     df['PPG'] = df['PTS']/df['GP']
 
     df.drop(df.loc[df['MPG'] < 24].index, inplace=True)
-    df.drop(df.loc[df['GP_PCT'] < 0.5].index, inplace=True)
+    df.drop(df.loc[df['GP_PCT'] < 0.6].index, inplace=True)
 
     df = df.reset_index(drop=True)
     df[['RPG', 'APG', 'TPG', 'SPG', 'BPG', 'FPG', 'PMPG']] = df[['REB', 'AST', 'TOV', 'STL', 'BLK', 'NBA_FANTASY_PTS', 'PLUS_MINUS']].div(df['GP'], axis=0)
@@ -89,6 +89,9 @@ def get_curr_allstars_newformat(model, bio):
                    'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK']
 
     worldteam = selectiondf[selectiondf['COUNTRY'] != 'USA'][worldcolorder].sort_values('PROB%', ascending=False).reset_index(drop=True)
+
+    if len(worldteam) > 8:
+        worldteam = worldteam[worldteam['PROB%'] >= 50].reset_index(drop=True)
 
     colorder = ['PROB%', 'POS', 'PLAYER', 'AGE', 'GP', 'GP%', 'TEAM', 'RANK', 'RECORD',
                 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK']

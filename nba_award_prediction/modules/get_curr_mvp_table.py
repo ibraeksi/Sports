@@ -26,6 +26,7 @@ def get_curr_mvp_table(model):
 
     df.drop(df.loc[df['MPG'] < 30].index, inplace=True)
     df.drop(df.loc[df['PPG'] < 10].index, inplace=True)
+    # df.drop(df.loc[df['GP_PCT'] < 0.6].index, inplace=True)
 
     df = df.reset_index(drop=True)
     df[['RPG', 'APG', 'TPG', 'SPG', 'BPG', 'FPG', 'PMPG']] = df[['REB', 'AST', 'TOV', 'STL', 'BLK', 'NBA_FANTASY_PTS', 'PLUS_MINUS']].div(df['GP'], axis=0)
