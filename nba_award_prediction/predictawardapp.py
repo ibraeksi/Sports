@@ -14,6 +14,7 @@ from modules.get_curr_mvp_table import get_curr_mvp_table
 from modules.get_curr_allstars import get_curr_allstars
 from modules.get_curr_allstars_newformat import get_curr_allstars_newformat
 from modules.get_curr_allrookie_teams import get_curr_allrookie_teams
+from modules.get_curr_clutch_players import get_curr_clutch_players
 
 st.set_page_config(
     page_title="NBA Predictions",
@@ -105,7 +106,7 @@ with open(trained_rookie_model, "rb") as rookie_model_file:
 allrookieteams = get_curr_allrookie_teams(rookie_model)
 st.session_state["allrookieteams"] = allrookieteams
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs([":chart_with_upwards_trend: Standings", ":crown: MVP Tracker", ":star: Old Format All-Stars", ":earth_africa: U.S. vs. World All-Stars", ":new: All-Rookie Teams"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([":chart_with_upwards_trend: Standings", ":crown: MVP Tracker", ":star: Old Format All-Stars", ":earth_africa: U.S. vs. World All-Stars", ":new: All-Rookie Teams", ":clock1130: Clutch Players"])
 
 with tab1:
     left_sta, gap_sta, right_sta = st.columns([5.5, 1, 5.5], vertical_alignment="top")
@@ -148,3 +149,11 @@ with tab5:
     st.markdown("\n\n")
     st.markdown("SECOND TEAM")
     st.dataframe(allrookieteams.tail(5), hide_index=True)
+
+with tab6:
+    clutchdf = get_curr_clutch_players()
+    st.dataframe(clutchdf, hide_index=True)
+    st.markdown("""- In order to qualify, the player must have played in at least
+            70% of the team's clutch minutes with a usage rate of at least 20%.""")
+    st.markdown("""- The Top 10 list is additionally filtered for players with a positive
+                +/- and a clutch win percentage above 50%.""")
