@@ -89,9 +89,8 @@ def get_curr_allstars_newformat(model, bio):
                    'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK']
 
     worldteam = selectiondf[selectiondf['COUNTRY'] != 'USA'][worldcolorder].sort_values('PROB%', ascending=False).reset_index(drop=True)
-
-    if len(worldteam) > 8:
-        worldteam = worldteam[worldteam['PROB%'] >= 50].reset_index(drop=True)
+    # if len(worldteam) > 8:
+    #     worldteam = worldteam[worldteam['PROB%'] >= 50].reset_index(drop=True)
 
     colorder = ['PROB%', 'POS', 'PLAYER', 'AGE', 'GP', 'GP%', 'TEAM', 'RANK', 'RECORD',
                 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK']
