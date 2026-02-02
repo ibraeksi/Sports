@@ -1,0 +1,25 @@
+PROB%,POS,PLAYER,AGE,GP,GP%,TEAM,RANK,RECORD,MIN,PTS,REB,AST,TOV,STL,BLK,TYPE
+76.22,BC,Anthony Edwards,24,40,80.0,Timberwolves,West #5,31-19,35.29,29.42,5.15,3.72,2.7,1.3,0.82,WestBench
+73.37,BC,Jamal Murray,28,45,90.0,Nuggets,West #3,33-17,35.46,25.49,4.36,7.49,2.33,1.02,0.36,WestBench
+89.77,FC,Kawhi Leonard,34,35,73.0,Clippers,West #9,23-25,32.95,27.6,6.17,3.57,2.09,2.03,0.6,WestBench
+84.58,FC,Julius Randle,31,50,100.0,Timberwolves,West #5,31-19,33.29,22.3,6.88,5.38,2.6,1.18,0.22,WestBench
+74.14,FC,Alperen Sengun,23,40,85.0,Rockets,West #4,30-17,34.1,20.95,9.22,6.35,3.25,1.42,0.98,WestBench
+52.39,WC,Stephen Curry,37,39,78.0,Warriors,West #8,27-23,31.33,27.21,3.54,4.85,2.85,1.13,0.41,WestBench
+43.32,WC,LeBron James,41,31,65.0,Lakers,West #6,29-19,33.1,21.9,5.77,6.61,2.84,1.1,0.58,WestBench
+94.97,BC,Cade Cunningham,24,42,88.0,Pistons,East #1,36-12,35.13,25.24,5.57,9.79,3.71,1.52,0.88,EastBench
+93.02,BC,Donovan Mitchell,29,47,92.0,Cavaliers,East #5,30-21,33.87,28.77,4.64,5.83,3.13,1.47,0.23,EastBench
+56.36,FC,Karl-Anthony Towns,30,46,94.0,Knicks,East #2,31-18,31.59,19.85,11.85,2.93,2.54,0.87,0.65,EastBench
+49.16,FC,Michael Porter Jr.,27,38,79.0,Nets,East #13,13-35,33.1,25.58,7.26,3.21,2.47,1.05,0.26,EastBench
+44.83,FC,Paolo Banchero,23,38,79.0,Magic,East #8,25-23,34.4,21.74,8.79,4.87,2.84,0.71,0.63,EastBench
+83.8,WC,Jaylen Brown,29,45,92.0,Celtics,East #3,31-18,34.29,29.4,6.93,4.8,3.6,1.04,0.4,EastBench
+74.95,WC,Scottie Barnes,24,50,98.0,Raptors,East #4,30-21,34.48,19.32,8.34,5.54,2.7,1.28,1.56,EastBench
+94.18,BC,Luka Dončić,26,40,83.0,Lakers,West #6,29-19,36.18,33.62,7.98,8.82,4.22,1.5,0.48,WestStart
+92.48,BC,Shai Gilgeous-Alexander,27,48,96.0,Thunder,West #1,39-11,33.43,32.04,4.44,6.35,2.08,1.29,0.79,WestStart
+99.72,FC,Nikola Jokić,30,34,68.0,Nuggets,West #3,33-17,34.11,29.26,12.0,10.71,3.53,1.41,0.71,WestStart
+98.48,FC,Kevin Durant,37,45,96.0,Rockets,West #4,30-17,36.81,26.18,5.42,4.6,3.02,0.71,0.91,WestStart
+96.24,FC,Victor Wembanyama,22,35,71.0,Spurs,West #2,33-16,28.92,24.09,11.03,2.71,2.71,0.94,2.71,WestStart
+98.77,BC,Tyrese Maxey,25,46,96.0,76ers,East #6,27-21,39.05,29.2,4.2,6.89,2.43,1.96,0.87,EastStart
+98.41,BC,Jalen Brunson,29,44,90.0,Knicks,East #2,31-18,34.4,27.2,3.2,6.09,2.25,0.66,0.11,EastStart
+94.93,FC,Joel Embiid,31,28,58.0,76ers,East #6,27-21,30.99,26.18,7.54,3.86,3.07,0.64,1.11,EastStart
+89.83,FC,Giannis Antetokounmpo,31,30,64.0,Bucks,East #12,18-29,29.21,27.97,10.03,5.6,3.33,0.9,0.73,EastStart
+66.46,FC,Evan Mobley,24,42,82.0,Cavaliers,East #5,30-21,33.37,17.9,8.76,4.05,2.1,0.9,1.95,EastStart
