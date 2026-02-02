@@ -4,15 +4,16 @@ import pickle
 from pathlib import Path
 
 trained_model = Path(__file__).parents[0] / 'models/mvptable_random_forest_v01.pkl'
-trained_allstar_model = Path(__file__).parents[0] / 'models/allstarselection_random_forest_v02.pkl'
-trained_new_allstar_model = Path(__file__).parents[0] / 'models/newformat_allstarselection_random_forest_v01.pkl'
+# trained_allstar_model = Path(__file__).parents[0] / 'models/allstarselection_random_forest_v02.pkl'
+# trained_new_allstar_model = Path(__file__).parents[0] / 'models/newformat_allstarselection_random_forest_v01.pkl'
 trained_rookie_model = Path(__file__).parents[0] / 'models/allrookie_random_forest_v01.pkl'
 player_bio_data = Path(__file__).parents[0] / 'data/raw/nba_current_player_bio.csv'
 final_allstar_predictions_data = Path(__file__).parents[0] / 'data/processed/nba_2026_allstar_predictions.csv'
+final_allstar_predictions_data_old_format = Path(__file__).parents[0] / 'data/processed/nba_2026_allstar_predictions_old_format.csv'
 
 from modules.get_league_standings import get_league_standings
 from modules.get_curr_mvp_table import get_curr_mvp_table
-from modules.get_curr_allstars import get_curr_allstars
+from modules.get_curr_allstars_final import get_curr_allstars_final
 from modules.get_curr_allstars_newformat_final import get_curr_allstars_newformat_final
 from modules.get_curr_allrookie_teams import get_curr_allrookie_teams
 from modules.get_curr_clutch_players import get_curr_clutch_players
@@ -36,10 +37,12 @@ st.session_state["mvptable"] = mvptable
 bio = pd.read_csv(player_bio_data)
 st.session_state["player_bio"] = bio
 
-with open(trained_allstar_model, "rb") as allstar_model_file:
-    allstar_model = pickle.load(allstar_model_file)
+# with open(trained_allstar_model, "rb") as allstar_model_file:
+#     allstar_model = pickle.load(allstar_model_file)
 
-weststarters, eaststarters, westbench, eastbench, intallstars = get_curr_allstars(allstar_model, bio)
+finalallstardf_old_format = pd.read_csv(final_allstar_predictions_data_old_format)
+
+weststarters, eaststarters, westbench, eastbench = get_curr_allstars_final(finalallstardf_old_format)
 st.session_state["weststarters"] = weststarters
 st.session_state["eaststarters"] = eaststarters
 st.session_state["westbench"] = westbench
@@ -78,8 +81,8 @@ def old_format_allstar():
 
 
 # New Format All-Star Predictions
-with open(trained_new_allstar_model, "rb") as model_file:
-    new_allstar_model = pickle.load(model_file)
+# with open(trained_new_allstar_model, "rb") as model_file:
+#     new_allstar_model = pickle.load(model_file)
 
 # Final 2026 All-Star Predictions using New Format
 finalallstardf = pd.read_csv(final_allstar_predictions_data)
