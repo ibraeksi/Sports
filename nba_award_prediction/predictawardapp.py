@@ -8,11 +8,12 @@ trained_allstar_model = Path(__file__).parents[0] / 'models/allstarselection_ran
 trained_new_allstar_model = Path(__file__).parents[0] / 'models/newformat_allstarselection_random_forest_v01.pkl'
 trained_rookie_model = Path(__file__).parents[0] / 'models/allrookie_random_forest_v01.pkl'
 player_bio_data = Path(__file__).parents[0] / 'data/raw/nba_current_player_bio.csv'
+final_allstar_predictions_data = Path(__file__).parents[0] / 'data/processed/nba_2026_allstar_predictions.csv'
 
 from modules.get_league_standings import get_league_standings
 from modules.get_curr_mvp_table import get_curr_mvp_table
 from modules.get_curr_allstars import get_curr_allstars
-from modules.get_curr_allstars_newformat import get_curr_allstars_newformat
+from modules.get_curr_allstars_newformat_final import get_curr_allstars_newformat_final
 from modules.get_curr_allrookie_teams import get_curr_allrookie_teams
 from modules.get_curr_clutch_players import get_curr_clutch_players
 
@@ -80,7 +81,16 @@ def old_format_allstar():
 with open(trained_new_allstar_model, "rb") as model_file:
     new_allstar_model = pickle.load(model_file)
 
-worldteam, usteam1, usteam2 = get_curr_allstars_newformat(new_allstar_model, bio)
+# Final 2026 All-Star Predictions using New Format
+finalallstardf = pd.read_csv(final_allstar_predictions_data)
+
+worldteam, usteam1, usteam2 = get_curr_allstars_newformat_final(finalallstardf)
+worldteam.insert(loc=0, column='AS*', value=['Yes', 'Yes', 'Yes', 'Yes',
+                                                'Yes', 'No', 'Yes', 'No', 'No'])
+usteam1.insert(loc=0, column='AS*', value=['Yes', 'Yes', 'Yes', 'Yes',
+                                                'Yes', 'Yes', 'Yes', 'No'])
+usteam2.insert(loc=0, column='AS*', value=['Yes', 'No', 'Yes', 'Yes',
+                                                'Yes', 'No', 'Yes', 'No'])
 st.session_state["worldteam"] = worldteam
 st.session_state["usteam1"] = usteam1
 st.session_state["usteam2"] = usteam2
@@ -93,10 +103,13 @@ def new_format_allstar():
         index=0, key='selected_team', horizontal=True
     )
     if selectteam == 'World':
+        st.markdown("\* Selected as 2026 All-Star")
         st.dataframe(worldteam, hide_index=True)
     elif selectteam == 'US #1':
+        st.markdown("\* Selected as 2026 All-Star")
         st.dataframe(usteam1, hide_index=True)
     elif selectteam == 'US #2':
+        st.markdown("\* Selected as 2026 All-Star")
         st.dataframe(usteam2, hide_index=True)
 
 # All-Rookie Predictions
