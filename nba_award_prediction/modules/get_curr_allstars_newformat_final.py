@@ -8,7 +8,7 @@ def get_curr_allstars_newformat_final(finaldf):
     """
     Uses the final season stats at the time of All-Star Selection for 2026 and
     returns a table with all-stars according to the new format
-    selectiondf = Final predictions for 2026 All-Star
+    finaldf = Final predictions for 2026 All-Star
     """
     # Per Conference
     eastselection = finaldf[finaldf['CONF'] == 'East'].head(12)
