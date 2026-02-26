@@ -82,7 +82,6 @@ def click_button():
     st.session_state.clicked = True
     st.session_state.disabled = True
 
-
 tab1, tab2, tab3 = st.tabs([":chart_with_upwards_trend: All-Time TD Leaders", ":page_with_curl: All-Time TD Game Logs", ":round_pushpin: All-Time TD Locations"])
 
 with tab1:
