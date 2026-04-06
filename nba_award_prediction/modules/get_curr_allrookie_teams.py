@@ -77,6 +77,6 @@ def get_curr_allrookie_teams(model):
 
     colorder = ['PROB%', 'PLAYER', 'AGE', 'GP', 'GP%', 'W', 'L',
                 'MIN', 'PTS', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'TEAM', 'RANK', 'RECORD']
-    allrookie = allrookie[colorder].sort_values('PROB%', ascending=False).head(10).reset_index(drop=True)
+    allrookie = allrookie[colorder].sort_values(['PROB%', 'PTS'], ascending=[False,False]).head(10).reset_index(drop=True)
 
     return allrookie

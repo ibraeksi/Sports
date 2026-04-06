@@ -24,7 +24,7 @@ def get_curr_mvp_table(model):
     df['MPG'] = df['MIN']/df['GP']
     df['PPG'] = df['PTS']/df['GP']
 
-    df.drop(df.loc[df['MPG'] < 30].index, inplace=True)
+    df.drop(df.loc[df['MPG'] < 29].index, inplace=True)
     df.drop(df.loc[df['PPG'] < 10].index, inplace=True)
 
     ## 65-game played rule
